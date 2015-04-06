@@ -1,13 +1,13 @@
 class Seat:
 
-    def __init__(self, rowNumber, position):
+    def __init__(self, row_number, position):
         """
         Represents a seat on a plane
 
         position is a string and is a letter from 'A' through 'F'
         """
-        self.rowNumber = rowNumber
+        self.rowNumber = row_number
         self.position = position
 
     def __str__(self):
-        return "Seat(row=%s, position=%s)" % (self.rowNumber, self.position)
+        return "Seat(row=%s, position=%s)" % (self.row_number, self.position)
