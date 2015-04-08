@@ -1,14 +1,31 @@
-import uuid
+from simpy import Process
 
 
 class Passenger:
 
-    def __init__(self):
-        self.id = uuid.uuid4()
-        self.seat = None
+    def __init__(self, env):
+        """
+            Represents a passenger boarding the airplane.
 
-    def add_seat_to_passenger(self, seat):
-        self.seat = seat
+            Passengers:
+                - walk to seat
+                - load carry on
+                - sit down
 
-    def __str__(self):
-        return "Passenger(id=%s)" % self.id
+            Variables:
+                - waiting in line
+                - loading carry on away from seat
+                - passenger has to unseat for this passenger to seat
+            """
+        self.env = env
+        self.action = env.process(self.run())
+
+    def run(self):
+        yield self.env.process(self.walk_aisle())
+
+    def walk_aisle(self):
+        print 'walking'
+        yield self.env.timeout(5)
+
+        print 'waiting'
+        yield self.env.timeout(2)
