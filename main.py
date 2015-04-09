@@ -1,5 +1,6 @@
 from random import shuffle
 from simpy import Environment
+from boarding_algorithms import BoardingAlgorithm
 from models.airplane import Airplane
 from models.passenger import Passenger
 
@@ -18,20 +19,23 @@ def setup():
         passenger = Passenger(env, seats[i], boeing_737)
         passengers.append(passenger)
 
-    return boeing_737, passengers
+    algs = BoardingAlgorithm(env, boeing_737, passengers)
+
+    return boeing_737, passengers, algs
 
 
 def board(e, passengers):
-    shuffle(ps)
-    print passengers is None
+    shuffle(passengers)
     for p in passengers:
         e.process(p.board())
 
+
 if __name__ == "__main__":
     env = Environment()
-    airplane, ps = setup()
+    airplane, passenger_list, algorithms = setup()
 
-    board(env, ps)
+    # board(env, passenger_list, algorithm_class)
+    algorithms.random_ordering()
 
     env.run()
 

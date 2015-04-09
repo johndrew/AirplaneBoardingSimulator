@@ -1,8 +1,11 @@
+from Queue import Queue
+
 
 class BoardingAlgorithm:
 
-    def __init__(self, airplane, passengers):
+    def __init__(self, env, airplane, passengers):
         """"""
+        self.env = env
         self.airplane = airplane
         self.passengers = passengers
 
@@ -60,3 +63,16 @@ class BoardingAlgorithm:
         aircraft. Jason Steffen identifies this as the second to worst
         boarding method.
         """
+
+    def random_ordering(self):
+        """
+        Implementation of a random seating where any passenger can board in
+        any order
+        """
+
+        aisle = self.airplane.get_aisle()
+        while len(self.passengers):
+            passenger = self.passengers.pop()
+            aisle.put(passenger)
+            while not aisle.empty():
+                aisle.passengers_walk_aisle()

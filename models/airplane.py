@@ -22,8 +22,7 @@ class Airplane:
         self.seats_per_row = seats
         self.number_of_aisles = aisles
         self.has_middle = has_middle
-
-        # self.algorithms = BoardingAlgorithm()
+        self.aisle = self.make_aisle()
 
         # containers
         self.rows = []
@@ -50,6 +49,17 @@ class Airplane:
             self.rows.append(row)
             self.seats += row.get_seats()
 
+    def make_aisle(self):
+        """
+
+        """
+        if self.has_middle:
+            raise NotImplementedError
+        else:
+            aisle = Aisle(self, self.env, self.number_of_rows)
+            aisle.maxsize = self.number_of_rows
+            return aisle
+
     def get_number_of_seats(self):
         return self.number_of_rows * self.seats_per_row
 
@@ -58,6 +68,9 @@ class Airplane:
 
     def get_number_of_rows(self):
         return self.number_of_rows
+
+    def get_aisle(self):
+        return self.aisle
 
     def __str__(self):
         return "Airplane(totalSeats=%s)" % (self.number_of_rows *
