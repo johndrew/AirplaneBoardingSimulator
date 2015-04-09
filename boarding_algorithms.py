@@ -1,8 +1,10 @@
 
 class BoardingAlgorithm:
 
-    def __init__(self):
+    def __init__(self, airplane, passengers):
         """"""
+        self.airplane = airplane
+        self.passengers = passengers
 
     def steffen_optimal(self):
         """

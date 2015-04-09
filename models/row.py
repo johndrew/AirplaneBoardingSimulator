@@ -14,19 +14,24 @@ class Row:
         self.num_seats = num_seats
         self.seats = []
 
+        self.make()
+
     def make(self):
         """
         Creates the row object
         """
         labels = position_labels
 
-        for i in self.num_seats:
+        for i in range(0, self.num_seats):
             seat = Seat(self.row_num, labels[i])
             self.seats.append(seat)
+
+    def get_seats(self):
+        return self.seats
 
     def __str__(self):
         result = 'Row('
         for seat in self.seats:
-            result += seat
+            result += seat.__str__() + ', '
         result += ')'
         return result

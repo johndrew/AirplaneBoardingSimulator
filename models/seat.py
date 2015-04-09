@@ -9,19 +9,21 @@ class Seat:
 
         position is a string and is a letter from 'A' through 'F'
         """
-        self.rowNumber = row_number
+        self.row_number = row_number
         self.position = position
 
         self.validate()
 
     def validate(self):
-        if type(self.rowNumber) != int:
-            raise TypeError("row number must be an int")
-        if type(self.position) != str:
-            raise TypeError("position must be a string")
-        if self.position not in position_labels:
-            raise TypeError("position must be one of these: %s" %
-                            position_labels)
+        assert isinstance(self.row_number, int)
+        assert isinstance(self.position, str)
+        assert self.position in position_labels
+
+    def get_row_number(self):
+        return self.row_number
+
+    def get_position(self):
+        return self.position
 
     def __str__(self):
         return "Seat(%s, %s)" % (self.row_number, self.position)
