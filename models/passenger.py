@@ -3,7 +3,7 @@ from simpy import Process
 
 class Passenger:
 
-    def __init__(self, env):
+    def __init__(self, env, seat):
         """
             Represents a passenger boarding the airplane.
 
@@ -19,6 +19,7 @@ class Passenger:
             """
         self.env = env
         self.action = env.process(self.run())
+        self.assigned_seat = seat
 
     def run(self):
         yield self.env.process(self.walk_aisle())

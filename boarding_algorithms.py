@@ -1,5 +1,5 @@
 
-class Boarding_Algorithm:
+class BoardingAlgorithm:
 
     def __init__(self):
         """"""
