@@ -1,6 +1,5 @@
 import uuid
-from random import randrange
-import simpy
+from random import uniform
 from constants import time_to_pass_one_row as walking_speeds, \
     time_to_load_carry_on as loading_speeds
 
@@ -22,15 +21,16 @@ class Passenger:
                 - passenger has to unseat for this passenger to seat
             """
         self.env = env
-        self.action = env.process(self.run())
+        # self.action = env.process(self.run())
         self.assigned_seat = seat
         self.id = uuid.uuid4()
         self.walking_speed = get_walking_speed()
         self.loading_speed = get_loading_speed()
         self.airplane = airplane
 
-    def run(self):
+    def board(self):
         yield self.env.process(self.walk_aisle())
+        yield self.env.process(self.load_carry_on())
 
     def walk_aisle(self):
         print 'passenger %s is walking' % self.id
@@ -52,7 +52,7 @@ class Passenger:
         Initially it is assumed that there is room for every passenger's
         bags in the overhead compartment directly above th passenger's seat
         """
-        print 'passenger %s is loading a carry on item'
+        print 'passenger %s is loading a carry on item' % self.id
         yield self.env.timeout(self.loading_speed)
 
 
@@ -63,7 +63,7 @@ def get_walking_speed():
     The speed equals how long it takes (in seconds) for a passenger to
     pass one row
     """
-    random_speed = randrange(walking_speeds['minimum'],
+    random_speed = uniform(walking_speeds['minimum'],
                              walking_speeds['maximum'])
 
     # below calculation gets a random value closer to the average
@@ -79,8 +79,8 @@ def get_loading_speed():
 
     It is assumed there is enough room to do this
     """
-    random_time = randrange(loading_speeds['minimum'],
-                            loading_speeds['maximum'])
+    random_time = uniform(loading_speeds['minimum'],
+                          loading_speeds['maximum'])
 
     # below calculation gets a random value closer to the average
     return (random_time + loading_speeds['average']) / 2

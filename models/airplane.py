@@ -15,7 +15,7 @@ class Airplane:
 
     def __init__(self, env, name, rows, seats, aisles, has_middle):
         self.env = env
-        self.action = env.process(self.run())
+        # self.action = env.process(self.run())
 
         self.name = name
         self.number_of_rows = rows
@@ -23,7 +23,7 @@ class Airplane:
         self.number_of_aisles = aisles
         self.has_middle = has_middle
 
-        self.algorithms = BoardingAlgorithm()
+        # self.algorithms = BoardingAlgorithm()
 
         # containers
         self.rows = []
@@ -48,7 +48,7 @@ class Airplane:
         for row_number in range(1, self.number_of_rows+1):
             row = Row(row_number, self.seats_per_row)
             self.rows.append(row)
-            self.seats.append(row.get_seats())
+            self.seats += row.get_seats()
 
     def get_number_of_seats(self):
         return self.number_of_rows * self.seats_per_row
