@@ -35,9 +35,9 @@ if __name__ == "__main__":
     airplane, passenger_list, algorithms = setup()
 
     # board(env, passenger_list, algorithm_class)
-    algorithms.random_ordering()
+    # algorithms.random_ordering()
 
-    env.run()
+    # env.run()
 
     print
     print 'hello at %s' % env.now

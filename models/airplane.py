@@ -56,7 +56,7 @@ class Airplane:
         if self.has_middle:
             raise NotImplementedError
         else:
-            aisle = Aisle(self, self.env, self.number_of_rows)
+            aisle = Aisle(self.env, self.number_of_rows)
             aisle.maxsize = self.number_of_rows
             return aisle
 

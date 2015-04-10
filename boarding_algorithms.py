@@ -1,4 +1,6 @@
 from Queue import Queue
+from models.passenger import get_seat_column, get_even_row_passengers, \
+    get_odd_row_passengers
 
 
 class BoardingAlgorithm:
@@ -30,6 +32,50 @@ class BoardingAlgorithm:
                 c) left side, odd rows
                 d) right side, odd rows
         """
+        def make_groups():
+            """
+            ...
+
+            Note: change this to make it work with bigger airplanes
+            """
+            group_1 = get_even_row_passengers(get_seat_column('F',
+                                                              self.passengers))
+            group_2 = get_even_row_passengers(get_seat_column('A',
+                                                              self.passengers))
+            group_3 = get_odd_row_passengers(get_seat_column('F',
+                                                              self.passengers))
+            group_4 = get_odd_row_passengers(get_seat_column('A',
+                                                              self.passengers))
+            group_5 = get_even_row_passengers(get_seat_column('E',
+                                                              self.passengers))
+            group_6 = get_even_row_passengers(get_seat_column('B',
+                                                              self.passengers))
+            group_7 = get_odd_row_passengers(get_seat_column('E',
+                                                              self.passengers))
+            group_8 = get_odd_row_passengers(get_seat_column('B',
+                                                              self.passengers))
+            group_9 = get_even_row_passengers(get_seat_column('D',
+                                                              self.passengers))
+            group_10 = get_even_row_passengers(get_seat_column('C',
+                                                              self.passengers))
+            group_11 = get_odd_row_passengers(get_seat_column('D',
+                                                              self.passengers))
+            group_12 = get_odd_row_passengers(get_seat_column('C',
+                                                              self.passengers))
+
+            groups = [group_1, group_2, group_3, group_4, group_5, group_6,
+                      group_7, group_8, group_9, group_10, group_11, group_12]
+
+            for group in groups:
+                group.sort(key=lambda x: x.get_row_number())
+
+            return groups
+
+        # for group in make_groups():
+        #     for passenger in group:
+
+
+
 
     def steffen_modified_optimal(self):
         """

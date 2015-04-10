@@ -1,4 +1,5 @@
 from Queue import Queue
+import simpy
 
 
 class Aisle(Queue):
@@ -33,4 +34,6 @@ class Aisle(Queue):
         """"""
         passengers = self.unpack_aisle()
         for passenger in passengers:
+            # try:
             self.env.process(passenger.walk_aisle())
+            # except simpy.Interrupt:
