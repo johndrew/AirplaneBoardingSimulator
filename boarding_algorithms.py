@@ -71,8 +71,10 @@ class BoardingAlgorithm:
 
             return groups
 
-        # for group in make_groups():
-        #     for passenger in group:
+        for group in make_groups():
+            for passenger in group:
+                # TODO: might be a problem not having all passengers move in parallel
+                passenger.walk_aisle()
 
 
 

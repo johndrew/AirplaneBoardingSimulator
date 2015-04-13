@@ -8,6 +8,10 @@ class Aisle(Queue):
         self.env = env
         self.number_of_rows = number_of_rows
 
+        # if a priority queue were used here, we could load all passengers
+        # into the queue all at once and they would be served correctly.
+        # However, this may take too much time.
+
     def unpack_aisle(self):
         """
         Removes all of the passengers from the queue so some action can be
