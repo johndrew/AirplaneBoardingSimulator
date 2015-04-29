@@ -1,4 +1,5 @@
 from Queue import Queue
+from random import shuffle
 from models.passenger import get_seat_column, get_even_row_passengers, \
     get_odd_row_passengers
 
@@ -116,6 +117,7 @@ class BoardingAlgorithm:
         """
 
         aisle = self.airplane.get_aisle()
+        shuffle(self.passengers)
         while len(self.passengers) and not aisle.full():
             passenger = self.passengers.pop()
             aisle.put(passenger)
@@ -124,4 +126,4 @@ class BoardingAlgorithm:
         #     walk_events = aisle.passengers_walk_aisle()
             # print walk_events
 
-        walk_events = aisle.passengers_walk_aisle()
+        aisle.passengers_walk_aisle()

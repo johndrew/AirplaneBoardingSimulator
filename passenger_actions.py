@@ -6,26 +6,14 @@ class Walk(Event):
     def __init__(self, env, passenger):
         super(Walk, self).__init__(env)
         self.passenger = passenger
+        self.ok = True  # Have to set the ok value to be triggered
 
-        # self.trigger(Load)
+        # load = Load(env, passenger)
+        # self.trigger(load)
+        # self.callbacks.append(load)
 
     def walk_aisle(self):
-        print 'passenger %s is walking' % self.passenger.id
-
-        for i in range(1, self.passenger.airplane.get_number_of_rows()):
-            yield self.walk_one_row()
-            if self.passenger.assigned_seat.get_row_number() == i:
-                print 'passenger %s has reached assigned seat %s' % \
-                      (self.passenger.id,
-                       self.passenger.assigned_seat)
-                break
-
-    def walk_one_row(self):
-        """
-        Simulates a passenger walking a single row.
-        """
-        print 'passenger %s is walking a row' % self.passenger.id
-        return self.env.timeout(self.passenger.walking_speed)
+        return self.passenger.walk_aisle()
 
 
 class Load(Event):
@@ -33,19 +21,40 @@ class Load(Event):
     def __init__(self, env, passenger):
         super(Load, self).__init__(env)
         self.passenger = passenger
+        self.ok = True  # Have to set the ok value to be triggered
+
+        # seat = Seat(env, passenger)
+        # self.trigger(seat)
+        # self.callbacks.append(seat)
 
     def load_carry_on(self):
-        """
-        Process of a passenger loading a carry on item.
+        print 'poop'
+        yield self.passenger.load_carry_on()
 
-        It is assumed that each passenger has only 1 carry on and that no
-        passenger does not have a carry on.
-
-        Initially it is assumed that there is room for every passenger's
-        bags in the overhead compartment directly above th passenger's seat
+    def __call__(self, *args, **kwargs):
         """
-        print 'passenger %s is loading a carry on item' % self.passenger.id
-        yield self.env.timeout(self.passenger.loading_speed)
+        Used when this Event is triggered by another Event
+        """
+        print 'load'
+        self.load_carry_on()
+
+
+class Seat(Event):
+
+    def __init__(self, env, passenger):
+        super(Seat, self).__init__(env)
+        self.passenger = passenger
+        self.ok = True  # Have to set the ok value to be triggered
+
+    def seat_self(self):
+        yield self.passenger.seat_self()
+
+    def __call__(self, *args, **kwargs):
+        """
+        Used when this Event is triggered by another Event
+        """
+        print 'seat'
+        self.seat_self()
 
 
 class StopPassengers(Event):
@@ -53,15 +62,33 @@ class StopPassengers(Event):
     def __init__(self, env, passengers):
         super(StopPassengers, self).__init__(env)
         self.passengers = passengers
-        # self.action = env.process(self.interrupt_passengers())
+        self.ok = True  # Have to set the ok value to be triggered
 
-    def interrupt_passengers(self, *args):
+    def interrupt_passengers(self):
         print 'interrupting other passengers'
         for passenger in self.passengers:
-            yield passenger.stop_walking()
+            if passenger.walk_process:
+                passenger.walk_process.interrupt()
+
+    def __call__(self, *args, **kwargs):
+        """
+        Used when this Event is triggered by another Event
+        """
+        print 'stop'
+        self.interrupt_passengers()
+
+
+# class StartPassengers(Event):
+#
+#     def __init__(self, env, passengers):
+#         super(StartPassengers, self).__init__(env)
+#         self.passengers = passengers
+#
+#     def resume_passenger_walking(self, *args):
+#         print 'resuming other passengers'
 
 
 def get_other_passengers(passenger, passengers):
-        others = list(passengers)
-        others.remove(passenger)
-        return others
+    others = list(passengers)
+    others.remove(passenger)
+    return others

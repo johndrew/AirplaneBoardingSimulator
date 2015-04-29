@@ -35,23 +35,22 @@ class Aisle(Queue):
 
         """
         passengers = self.unpack_aisle()
-        walk_events = []
 
         for passenger in passengers:
             print "passenger %s is %s and is at %s" % \
                   (passenger.id, passengers.index(passenger),
                    passenger.assigned_seat)
-            passenger_walk = Walk(self.env, passenger)  # walk event
-            walk_events.append(passenger_walk)
-            others = get_other_passengers(passenger, passengers)
-            stop = StopPassengers(self.env, others)
-            stop.ok = True
 
-            passenger_walk.trigger(stop)
-            passenger_walk.callbacks.append(stop.interrupt_passengers)
-            self.env.process(passenger_walk.walk_aisle())
+            passenger_walk = Walk(self.env, passenger)
 
-        return walk_events
+            stop = StopPassengers(self.env, get_other_passengers(passenger,
+                                                                 passengers))
+
+            # passenger_walk.trigger(stop)
+            # passenger_walk.callbacks.insert(0, stop)
+
+            walk_process = self.env.process(passenger_walk.walk_aisle())
+            passenger.set_walk_process(walk_process)
 
     def remove_from_aisle(self, passenger):
         self.get(passenger)
