@@ -76,9 +76,6 @@ class BoardingAlgorithm:
                 # TODO: might be a problem not having all passengers move in parallel
                 passenger.walk_aisle()
 
-
-
-
     def steffen_modified_optimal(self):
         """
         Implementation of Jason Steffen's optimal boarding algorithm modified
@@ -119,8 +116,12 @@ class BoardingAlgorithm:
         """
 
         aisle = self.airplane.get_aisle()
-        while len(self.passengers):
+        while len(self.passengers) and not aisle.full():
             passenger = self.passengers.pop()
             aisle.put(passenger)
-            while not aisle.empty():
-                aisle.passengers_walk_aisle()
+
+        # while not aisle.empty():
+        #     walk_events = aisle.passengers_walk_aisle()
+            # print walk_events
+
+        walk_events = aisle.passengers_walk_aisle()

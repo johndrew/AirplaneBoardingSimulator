@@ -34,10 +34,10 @@ if __name__ == "__main__":
     env = Environment()
     airplane, passenger_list, algorithms = setup()
 
-    # board(env, passenger_list, algorithm_class)
-    # algorithms.random_ordering()
+    # board(env, passenger_list)
+    algorithms.random_ordering()
 
-    # env.run()
+    env.run()
 
     print
     print 'hello at %s' % env.now

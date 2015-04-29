@@ -1,5 +1,5 @@
 from Queue import Queue
-import simpy
+from passenger_actions import Walk, StopPassengers, get_other_passengers
 
 
 class Aisle(Queue):
@@ -7,10 +7,6 @@ class Aisle(Queue):
         Queue.__init__(self)
         self.env = env
         self.number_of_rows = number_of_rows
-
-        # if a priority queue were used here, we could load all passengers
-        # into the queue all at once and they would be served correctly.
-        # However, this may take too much time.
 
     def unpack_aisle(self):
         """
@@ -21,7 +17,7 @@ class Aisle(Queue):
         """
         passengers = []
         while not self.empty():
-            passengers += self.get()
+            passengers.append(self.get())
         return passengers
 
     def pack_aisle(self, passengers):
@@ -35,9 +31,27 @@ class Aisle(Queue):
         return self
 
     def passengers_walk_aisle(self):
-        """"""
+        """
+
+        """
         passengers = self.unpack_aisle()
+        walk_events = []
+
         for passenger in passengers:
-            # try:
-            self.env.process(passenger.walk_aisle())
-            # except simpy.Interrupt:
+            print "passenger %s is %s and is at %s" % \
+                  (passenger.id, passengers.index(passenger),
+                   passenger.assigned_seat)
+            passenger_walk = Walk(self.env, passenger)  # walk event
+            walk_events.append(passenger_walk)
+            others = get_other_passengers(passenger, passengers)
+            stop = StopPassengers(self.env, others)
+            stop.ok = True
+
+            passenger_walk.trigger(stop)
+            passenger_walk.callbacks.append(stop.interrupt_passengers)
+            self.env.process(passenger_walk.walk_aisle())
+
+        return walk_events
+
+    def remove_from_aisle(self, passenger):
+        self.get(passenger)
