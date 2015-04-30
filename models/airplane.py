@@ -29,13 +29,6 @@ class Airplane:
         self.make_rows()
         self.aisle = self.make_aisle(self.rows)
 
-    # def run(self):
-    #     self.make_rows()
-    #     self.aisle = self.make_aisle(self.rows)
-    #
-    #     # if this is removed, there are errors. It needs some form of yield
-    #     yield self.env.timeout(0)
-
     def make_rows(self):
         """
         Creates all of the row objects for this plane

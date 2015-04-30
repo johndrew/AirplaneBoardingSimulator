@@ -22,7 +22,7 @@ class Walk(Event):
         return self.passenger.walk_aisle()
 
     def walk_one(self):
-        return self.passenger.walk_one_row()
+        yield self.passenger.walk_one_row()
 
 
 class Load(Event):
@@ -86,17 +86,15 @@ class StopPassengers(Event):
         self.interrupt_passengers()
 
 
-# class StartPassengers(Event):
-#
-#     def __init__(self, env, passengers):
-#         super(StartPassengers, self).__init__(env)
-#         self.passengers = passengers
-#
-#     def resume_passenger_walking(self, *args):
-#         print 'resuming other passengers'
-
-
 def get_other_passengers(passenger, passengers):
     others = list(passengers)
     others.remove(passenger)
     return others
+
+
+def are_passengers_seated(passengers):
+    for passenger in passengers:
+        if not passenger.is_seated:
+            return False
+
+    return True

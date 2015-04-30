@@ -2,6 +2,7 @@ from random import shuffle
 from models.passenger import get_seat_column, get_even_row_passengers, \
     get_odd_row_passengers
 from models.waiting_queue import WaitingQueue
+from passenger_actions import are_passengers_seated
 
 
 class BoardingAlgorithm:
@@ -75,8 +76,8 @@ class BoardingAlgorithm:
         aisle = self.airplane.get_aisle()
 
         for group in make_groups():
-            aisle.add_passengers(group)
-            aisle.passengers_walk_aisle()
+            for passenger in group:
+                passenger.walk_aisle()
 
     def steffen_modified_optimal(self):
         """
@@ -116,17 +117,23 @@ class BoardingAlgorithm:
         Implementation of a random seating where any passenger can board in
         any order
         """
-
         aisle = self.airplane.get_aisle()
         waiting_queue = WaitingQueue()
 
         shuffle(self.passengers)
         waiting_queue.add_passengers(self.passengers)
 
+        # Add the first passenger to the aisle
+        p = waiting_queue.get()
+        aisle.add_passenger(p)
+
         # Cycle through passengers waiting in queue until all are in aisle
         while not waiting_queue.empty():
-            aisle.walk_passengers()
-
+            aisle.step_passengers()
 
             passenger = waiting_queue.get()
             aisle.add_passenger(passenger)
+
+        # Keep moving passengers until all are seated
+        while not are_passengers_seated(self.passengers):
+            aisle.step_passengers()

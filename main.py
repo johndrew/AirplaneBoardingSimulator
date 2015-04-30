@@ -15,13 +15,13 @@ def setup():
     passengers = []
 
     # create a passenger for every seat on the plane
-    for i in range(0, boeing_737.get_number_of_seats()):
-        passenger = Passenger(env, seats[i], boeing_737)
+    for j in range(0, boeing_737.get_number_of_seats()):
+        passenger = Passenger(env, seats[j], boeing_737)
         passengers.append(passenger)
 
-    algs = BoardingAlgorithm(env, boeing_737, passengers)
+    _algorithms = BoardingAlgorithm(env, boeing_737, passengers)
 
-    return boeing_737, passengers, algs
+    return boeing_737, passengers, _algorithms
 
 
 def setup_test():
@@ -29,8 +29,8 @@ def setup_test():
     seats = test_airplane.get_seats()
     passengers = []
 
-    for i in range(0, test_airplane.get_number_of_seats()):
-        passenger = Passenger(env, seats[i], test_airplane)
+    for j in range(0, test_airplane.get_number_of_seats()):
+        passenger = Passenger(env, seats[j], test_airplane)
         passengers.append(passenger)
 
     _algorithms = BoardingAlgorithm(env, test_airplane, passengers)
@@ -46,9 +46,11 @@ def board(e, passengers):
 
 if __name__ == "__main__":
     env = Environment()
-    airplane, passenger_list, algorithms = setup_test()
+    # airplane, passenger_list, algorithms = setup_test()
+    airplane, passenger_list, algorithms = setup()
 
     algorithms.random_ordering()
+    # algorithms.steffen_optimal()
 
     times = []
     total_trials = 1000

@@ -33,10 +33,6 @@ class Passenger():
         self.current_row = None
         self.is_seated = False
 
-    # def board(self):
-    #     yield self.env.process(self.walk_aisle())
-    #     yield self.env.process(self.load_carry_on())
-
     def walk_aisle(self):
         print 'passenger %s is walking' % self.id
 
@@ -57,7 +53,7 @@ class Passenger():
         """
         Simulates a passenger walking a single row.
         """
-        # print 'passenger %s is walking a row' % self.id
+        print 'passenger %s is walking a row' % self.assigned_seat
         return self.env.timeout(self.walking_speed)
 
     def load_carry_on(self):
@@ -70,14 +66,14 @@ class Passenger():
         Initially it is assumed that there is room for every passenger's
         bags in the overhead compartment directly above th passenger's seat
         """
-        print 'passenger %s is loading a carry on item' % self.id
+        print 'passenger %s is loading a carry on item' % self.assigned_seat
         yield self.env.timeout(self.loading_speed)
 
     def seat_self(self):
         """
         Process of a passenger seating him or herself.
         """
-        print 'passenger %s is now seating' % self.id
+        print 'passenger %s is now seating' % self.assigned_seat
         return self.env.timeout(self.seating_speed)
 
     def stop_walking(self):
