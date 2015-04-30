@@ -1,56 +1,51 @@
-from Queue import Queue
-from passenger_actions import Walk, StopPassengers, get_other_passengers
+from simpy import Resource
+from passenger_actions import Walk, Load, Seat
 
 
-class Aisle(Queue):
-    def __init__(self, env, number_of_rows):
-        Queue.__init__(self)
+class Aisle:
+    def __init__(self, env, rows):
         self.env = env
-        self.number_of_rows = number_of_rows
+        self.rows = rows
+        self.space_to_walk = Resource(env, capacity=len(rows))
+        self.passengers_in_aisle = []
 
-    def unpack_aisle(self):
-        """
-        Removes all of the passengers from the queue so some action can be
-        performed on them.
+    def add_passenger(self, passenger):
 
-        Queue (self) will be empty by the end of execution of this method
-        """
-        passengers = []
-        while not self.empty():
-            passengers.append(self.get())
-        return passengers
+        # Check if there is room in the aisle
+        with self.space_to_walk.request() as req:
+            yield req
 
-    def pack_aisle(self, passengers):
-        """
-        Takes a list of passengers and puts them back in the queue.
+            self.passengers_in_aisle.append(passenger)
+            passenger.current_row = 1
+            yield self.rows[1].room.request()
 
-        Used after unpacking the aisle.
-        """
-        for passenger in passengers:
-            self.put(passenger)
-        return self
+    def walk_passengers(self):
 
-    def passengers_walk_aisle(self):
-        """
+        # Cycle through passengers in aisle until all are seated
+        for passenger in self.passengers_in_aisle:
+            walk_event = Walk(self.env, passenger)
 
-        """
-        passengers = self.unpack_aisle()
-
-        for passenger in passengers:
-            print "passenger %s is %s and is at %s" % \
-                  (passenger.id, passengers.index(passenger),
-                   passenger.assigned_seat)
-
-            passenger_walk = Walk(self.env, passenger)
-
-            stop = StopPassengers(self.env, get_other_passengers(passenger,
-                                                                 passengers))
-
-            # passenger_walk.trigger(stop)
-            # passenger_walk.callbacks.insert(0, stop)
-
-            walk_process = self.env.process(passenger_walk.walk_aisle())
+            walk_process = self.env.process(walk_event.walk_aisle())
             passenger.set_walk_process(walk_process)
 
-    def remove_from_aisle(self, passenger):
-        self.get(passenger)
+    def step_passengers(self):
+
+        # Cycle through passengers in aisle until all have moved one
+        for passenger in self.passengers_in_aisle:
+            if passenger.assigned_seat.row_number == passenger.current_row:
+                self.rows[passenger.current_row].room.release()
+
+                load = Load(self.env, passenger)
+                seat = Seat(self.env, passenger)
+
+
+            else:
+                yield self.rows[passenger.current_row + 1].room.request()
+
+                self.rows[passenger.current_row].room.release()
+                passenger.current_row += 1
+
+                walk_event = Walk(self.env, passenger)
+
+                walk_process = self.env.process(walk_event.walk_one())
+                passenger.set_walk_process(walk_process)

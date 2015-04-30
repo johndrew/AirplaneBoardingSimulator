@@ -1,9 +1,9 @@
 import uuid
 from random import uniform
-from simpy import Process, Event
 from constants import time_to_pass_one_row as walking_speeds, \
     time_to_load_carry_on as loading_speeds, \
     time_to_install_in_seat as seating_speeds
+from passenger_actions import Load, Seat
 
 
 class Passenger():
@@ -30,6 +30,8 @@ class Passenger():
         self.seating_speed = get_process_speed(seating_speeds)
         self.airplane = airplane
         self.walk_process = None
+        self.current_row = None
+        self.is_seated = False
 
     # def board(self):
     #     yield self.env.process(self.walk_aisle())
@@ -44,7 +46,12 @@ class Passenger():
                 print 'passenger %s has reached assigned seat %s' % \
                       (self.id,
                        self.assigned_seat)
-                break
+
+                load = Load(self.env, self)
+                seat = Seat(self.env, self)
+
+                self.env.process(load.load_carry_on())
+                self.env.process(seat.seat_self())
 
     def walk_one_row(self):
         """
@@ -64,7 +71,7 @@ class Passenger():
         bags in the overhead compartment directly above th passenger's seat
         """
         print 'passenger %s is loading a carry on item' % self.id
-        return self.env.timeout(self.loading_speed)
+        yield self.env.timeout(self.loading_speed)
 
     def seat_self(self):
         """

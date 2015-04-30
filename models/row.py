@@ -1,3 +1,4 @@
+from simpy import Resource
 from models.seat import Seat
 from constants import position_labels
 
@@ -9,10 +10,11 @@ class Row:
     Number of seats may vary depending on the type of plane
     """
 
-    def __init__(self, row_num, num_seats):
+    def __init__(self, env, row_num, num_seats):
         self.row_num = row_num
         self.num_seats = num_seats
         self.seats = []
+        self.room = Resource(env, capacity=1)
 
         self.make()
 

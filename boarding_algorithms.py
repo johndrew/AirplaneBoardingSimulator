@@ -1,7 +1,7 @@
-from Queue import Queue
 from random import shuffle
 from models.passenger import get_seat_column, get_even_row_passengers, \
     get_odd_row_passengers
+from models.waiting_queue import WaitingQueue
 
 
 class BoardingAlgorithm:
@@ -72,10 +72,11 @@ class BoardingAlgorithm:
 
             return groups
 
+        aisle = self.airplane.get_aisle()
+
         for group in make_groups():
-            for passenger in group:
-                # TODO: might be a problem not having all passengers move in parallel
-                passenger.walk_aisle()
+            aisle.add_passengers(group)
+            aisle.passengers_walk_aisle()
 
     def steffen_modified_optimal(self):
         """
@@ -103,7 +104,7 @@ class BoardingAlgorithm:
             4) sections 20-25
         """
 
-    def back_to_front_(self):
+    def back_to_front(self):
         """
         Implementation of the boarding method typically used on commercial
         aircraft. Jason Steffen identifies this as the second to worst
@@ -117,13 +118,15 @@ class BoardingAlgorithm:
         """
 
         aisle = self.airplane.get_aisle()
+        waiting_queue = WaitingQueue()
+
         shuffle(self.passengers)
-        while len(self.passengers) and not aisle.full():
-            passenger = self.passengers.pop()
-            aisle.put(passenger)
+        waiting_queue.add_passengers(self.passengers)
 
-        # while not aisle.empty():
-        #     walk_events = aisle.passengers_walk_aisle()
-            # print walk_events
+        # Cycle through passengers waiting in queue until all are in aisle
+        while not waiting_queue.empty():
+            aisle.walk_passengers()
 
-        aisle.passengers_walk_aisle()
+
+            passenger = waiting_queue.get()
+            aisle.add_passenger(passenger)

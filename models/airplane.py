@@ -17,22 +17,24 @@ class Airplane:
         self.env = env
         # self.action = env.process(self.run())
 
+        # containers
+        self.rows = []
+        self.seats = []
+
         self.name = name
         self.number_of_rows = rows
         self.seats_per_row = seats
         self.number_of_aisles = aisles
         self.has_middle = has_middle
-        self.aisle = self.make_aisle()
-
-        # containers
-        self.rows = []
-        self.seats = []
-
-    def run(self):
         self.make_rows()
+        self.aisle = self.make_aisle(self.rows)
 
-        # if this is removed, there are errors. It needs some form of yield
-        yield self.env.timeout(0)
+    # def run(self):
+    #     self.make_rows()
+    #     self.aisle = self.make_aisle(self.rows)
+    #
+    #     # if this is removed, there are errors. It needs some form of yield
+    #     yield self.env.timeout(0)
 
     def make_rows(self):
         """
@@ -45,18 +47,18 @@ class Airplane:
         start at 1, which would normally be the first, first-class row number
         """
         for row_number in range(1, self.number_of_rows+1):
-            row = Row(row_number, self.seats_per_row)
+            row = Row(self.env, row_number, self.seats_per_row)
             self.rows.append(row)
             self.seats += row.get_seats()
 
-    def make_aisle(self):
+    def make_aisle(self, rows):
         """
 
         """
         if self.has_middle:
             raise NotImplementedError
         else:
-            aisle = Aisle(self.env, self.number_of_rows)
+            aisle = Aisle(self.env, rows)
             aisle.maxsize = self.number_of_rows
             return aisle
 

@@ -24,6 +24,20 @@ def setup():
     return boeing_737, passengers, algs
 
 
+def setup_test():
+    test_airplane = Airplane(env, 'Test Airplane', 3, 2, 1, False)
+    seats = test_airplane.get_seats()
+    passengers = []
+
+    for i in range(0, test_airplane.get_number_of_seats()):
+        passenger = Passenger(env, seats[i], test_airplane)
+        passengers.append(passenger)
+
+    _algorithms = BoardingAlgorithm(env, test_airplane, passengers)
+
+    return test_airplane, passengers, _algorithms
+
+
 def board(e, passengers):
     shuffle(passengers)
     for p in passengers:
@@ -32,12 +46,17 @@ def board(e, passengers):
 
 if __name__ == "__main__":
     env = Environment()
-    airplane, passenger_list, algorithms = setup()
+    airplane, passenger_list, algorithms = setup_test()
 
-    # board(env, passenger_list)
     algorithms.random_ordering()
 
-    env.run()
+    times = []
+    total_trials = 1000
 
-    print
-    print 'hello at %s' % env.now
+    for i in range(0, total_trials):
+        env.run()
+        times.append(env.now)
+
+    print "Average time for %s runs: %s" % (total_trials,
+                                            reduce(lambda x, y: x + y, times)
+                                            / len(times))

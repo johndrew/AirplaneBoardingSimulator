@@ -1,4 +1,4 @@
-from simpy import Event
+from simpy import Event, Interrupt
 
 
 class Walk(Event):
@@ -9,11 +9,20 @@ class Walk(Event):
         self.ok = True  # Have to set the ok value to be triggered
 
         # load = Load(env, passenger)
+        # self.load_event = load
         # self.trigger(load)
         # self.callbacks.append(load)
+        #
+        # seat = Seat(env, passenger)
+        # self.seat_event = seat
+        # self.trigger(seat)
+        # self.callbacks.append(seat)
 
     def walk_aisle(self):
         return self.passenger.walk_aisle()
+
+    def walk_one(self):
+        return self.passenger.walk_one_row()
 
 
 class Load(Event):
@@ -23,20 +32,14 @@ class Load(Event):
         self.passenger = passenger
         self.ok = True  # Have to set the ok value to be triggered
 
-        # seat = Seat(env, passenger)
-        # self.trigger(seat)
-        # self.callbacks.append(seat)
-
     def load_carry_on(self):
-        print 'poop'
-        yield self.passenger.load_carry_on()
+        return self.passenger.load_carry_on()
 
     def __call__(self, *args, **kwargs):
         """
         Used when this Event is triggered by another Event
         """
-        print 'load'
-        self.load_carry_on()
+        self.env.process(self.load_carry_on())
 
 
 class Seat(Event):
@@ -53,8 +56,7 @@ class Seat(Event):
         """
         Used when this Event is triggered by another Event
         """
-        print 'seat'
-        self.seat_self()
+        self.env.process(self.seat_self())
 
 
 class StopPassengers(Event):
@@ -68,13 +70,19 @@ class StopPassengers(Event):
         print 'interrupting other passengers'
         for passenger in self.passengers:
             if passenger.walk_process:
-                passenger.walk_process.interrupt()
+                # try:
+                passenger.walk_process.interrupt(cause=
+                                                 "passenger %s is loading "
+                                                 "luggage" % passenger.id)
+                # except Interrupt:
+                #     print "Other passenger's walk events were interrupted"
+                #     while not passenger.walk_process.seat_event.processed:
+                #         continue
 
     def __call__(self, *args, **kwargs):
         """
         Used when this Event is triggered by another Event
         """
-        print 'stop'
         self.interrupt_passengers()
 
 
