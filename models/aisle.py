@@ -91,7 +91,9 @@ class Aisle:
             passenger.current_row = 1
             return True
         else:
-            # self.env.process(wait(self.env))
+            # Assumption: a passenger needs to wait the average amount of time
+            # it takes to load a carry on in order to get into a full aisle
+            self.env.process(wait(self.env))
             return False
 
     def step_passengers2(self):
@@ -115,8 +117,9 @@ class Aisle:
                     walk_event = Walk(self.env, passenger)
                     self.env.process(walk_event.walk_one())
                 else:
+                    # Passenger must wait the average time it takes to load
+                    # a carry on in order to continue walking
                     self.env.process(wait(self.env))
-
 
     def only_passener_left(self, passenger):
         if len(self.passengers_in_aisle) == 1 and \

@@ -34,14 +34,14 @@ class Passenger():
         self.is_seated = False
 
     def walk_aisle(self):
-        print 'passenger %s is walking' % self.id
+        # print 'passenger %s is walking' % self.id
 
         for i in range(1, self.airplane.get_number_of_rows()):
             yield self.walk_one_row()
             if self.assigned_seat.get_row_number() == i:
-                print 'passenger %s has reached assigned seat %s' % \
-                      (self.id,
-                       self.assigned_seat)
+                # print 'passenger %s has reached assigned seat %s' % \
+                #       (self.id,
+                #        self.assigned_seat)
 
                 load = Load(self.env, self)
                 seat = Seat(self.env, self)
@@ -53,7 +53,7 @@ class Passenger():
         """
         Simulates a passenger walking a single row.
         """
-        print 'passenger %s is walking a row' % self.assigned_seat
+        # print 'passenger %s is walking a row' % self.assigned_seat
         self.env.total_time += self.walking_speed
         return self.env.timeout(self.walking_speed)
 
@@ -67,7 +67,7 @@ class Passenger():
         Initially it is assumed that there is room for every passenger's
         bags in the overhead compartment directly above th passenger's seat
         """
-        print 'passenger %s is loading a carry on item' % self.assigned_seat
+        # print 'passenger %s is loading a carry on item' % self.assigned_seat
         self.env.total_time += self.loading_speed
         yield self.env.timeout(self.loading_speed)
 
@@ -75,12 +75,12 @@ class Passenger():
         """
         Process of a passenger seating him or herself.
         """
-        print 'passenger %s is now seating' % self.assigned_seat
+        # print 'passenger %s is now seating' % self.assigned_seat
         self.env.total_time += self.seating_speed
         return self.env.timeout(self.seating_speed)
 
     def stop_walking(self):
-        print "passenger %s stopped walking" % self.id
+        # print "passenger %s stopped walking" % self.id
         return self.interrupt()
 
     def get_assigned_seat(self):
