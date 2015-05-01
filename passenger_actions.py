@@ -1,4 +1,5 @@
 from simpy import Event, Interrupt
+from constants import time_to_load_carry_on as loading_speeds
 
 
 class Walk(Event):
@@ -98,3 +99,23 @@ def are_passengers_seated(passengers):
             return False
 
     return True
+
+
+def next_row_occupied(current_passenger, passengers):
+    current_row = current_passenger.current_row
+
+    for passenger in passengers:
+        if current_passenger == passenger or not current_passenger.current_row:
+            continue
+        elif passenger.current_row == current_row + 1:
+            return True
+
+    return False
+
+
+def wait(env):
+    loading_average = (loading_speeds['minimum'] + loading_speeds['maximum']) \
+                      / 2
+    waiting_time = (loading_average + loading_speeds['average']) / 2
+    env.total_time += waiting_time
+    yield env.timeout(waiting_time)

@@ -25,7 +25,7 @@ def setup():
 
 
 def setup_test():
-    test_airplane = Airplane(env, 'Test Airplane', 3, 2, 1, False)
+    test_airplane = Airplane(env, 'Test Airplane', 3, 3, 1, False)
     seats = test_airplane.get_seats()
     passengers = []
 
@@ -46,18 +46,22 @@ def board(e, passengers):
 
 if __name__ == "__main__":
     env = Environment()
+    env.total_time = 0
     # airplane, passenger_list, algorithms = setup_test()
     airplane, passenger_list, algorithms = setup()
 
-    algorithms.random_ordering()
-    # algorithms.steffen_optimal()
+    # algorithms.random_ordering()
+    # algorithms.back_to_front()
+    # algorithms.front_to_back()
+    algorithms.steffen_optimal()
 
     times = []
     total_trials = 1000
 
     for i in range(0, total_trials):
         env.run()
-        times.append(env.now)
+        times.append(env.total_time)
+        # times.append(env.now)
 
     print "Average time for %s runs: %s" % (total_trials,
                                             reduce(lambda x, y: x + y, times)

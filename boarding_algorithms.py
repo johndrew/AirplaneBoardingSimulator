@@ -74,10 +74,11 @@ class BoardingAlgorithm:
             return groups
 
         aisle = self.airplane.get_aisle()
+        waiting_queue = WaitingQueue()
 
         for group in make_groups():
-            for passenger in group:
-                passenger.walk_aisle()
+            self.board_passengers(group, waiting_queue, aisle)
+
 
     def steffen_modified_optimal(self):
         """
@@ -104,6 +105,10 @@ class BoardingAlgorithm:
             3) sections 15-20
             4) sections 20-25
         """
+        aisle = self.airplane.get_aisle()
+        waiting_queue = WaitingQueue()
+
+        self.board_passengers(self.passengers, waiting_queue, aisle)
 
     def back_to_front(self):
         """
@@ -111,6 +116,11 @@ class BoardingAlgorithm:
         aircraft. Jason Steffen identifies this as the second to worst
         boarding method.
         """
+        aisle = self.airplane.get_aisle()
+        waiting_queue = WaitingQueue()
+
+        # self.passengers.reverse()
+        self.board_passengers(self.passengers, waiting_queue, aisle)
 
     def random_ordering(self):
         """
@@ -121,19 +131,24 @@ class BoardingAlgorithm:
         waiting_queue = WaitingQueue()
 
         shuffle(self.passengers)
-        waiting_queue.add_passengers(self.passengers)
+        self.board_passengers(self.passengers, waiting_queue, aisle)
+
+    def board_passengers(self, passengers, waiting_queue, aisle):
+        waiting_queue.add_passengers(passengers)
 
         # Add the first passenger to the aisle
         p = waiting_queue.get()
-        aisle.add_passenger(p)
+        aisle.add_passenger2(p)
 
         # Cycle through passengers waiting in queue until all are in aisle
         while not waiting_queue.empty():
-            aisle.step_passengers()
+            aisle.step_passengers2()
 
             passenger = waiting_queue.get()
-            aisle.add_passenger(passenger)
+            added = aisle.add_passenger2(passenger)
+            if not added:
+                waiting_queue.put(passenger)
 
         # Keep moving passengers until all are seated
-        while not are_passengers_seated(self.passengers):
-            aisle.step_passengers()
+        while not are_passengers_seated(passengers):
+            aisle.step_passengers2()
