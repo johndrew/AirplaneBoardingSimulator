@@ -28,7 +28,10 @@ def setup():
 
 
 def setup_test():
-    test_airplane = Airplane(env, 'Test Airplane', 3, 3, 1, False)
+    """
+    Creates a test airplane of 3 rows and 2 seats to test the simulation
+    """
+    test_airplane = Airplane(env, 'Test Airplane', 3, 2, 1, False)
     seats = test_airplane.get_seats()
     passengers = []
 
@@ -41,26 +44,24 @@ def setup_test():
     return test_airplane, passengers, _algorithms
 
 
-def board(e, passengers):
-    shuffle(passengers)
-    for p in passengers:
-        e.process(p.board())
-
-
 def run_trials(environ, total):
-    times = []
-    total_trials = total
+    """
+    Runs the simulation the number of times specified by 'total'
+    """
+    run_times = []
 
-    for i in range(0, total_trials):
+    for i in range(0, total):
         environ.run()
-        times.append(environ.total_time)
+        run_times.append(environ.total_time)
 
-    return times
+    return run_times
 
 
 def reduce_by_averaging(trials, total, amount):
     """
+    Creates groups of averages of a list of run times.
 
+    The size of the groups is specified by 'amount'
     """
     new_averages = []
 
@@ -79,7 +80,7 @@ def get_mean(trials):
 if __name__ == "__main__":
     env = Environment()
     all_times = {}
-    total_trials = 1000
+    total_trials = 10000
 
     airplane, passenger_list, algorithms = setup()
     algorithms.random_ordering()
