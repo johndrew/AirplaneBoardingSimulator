@@ -3,7 +3,6 @@ from random import uniform
 from constants import time_to_pass_one_row as walking_speeds, \
     time_to_load_carry_on as loading_speeds, \
     time_to_install_in_seat as seating_speeds
-from passenger_actions import Load, Seat
 
 
 class Passenger():
@@ -32,22 +31,6 @@ class Passenger():
         self.walk_process = None
         self.current_row = None
         self.is_seated = False
-
-    def walk_aisle(self):
-        # print 'passenger %s is walking' % self.id
-
-        for i in range(1, self.airplane.get_number_of_rows()):
-            yield self.walk_one_row()
-            if self.assigned_seat.get_row_number() == i:
-                # print 'passenger %s has reached assigned seat %s' % \
-                #       (self.id,
-                #        self.assigned_seat)
-
-                load = Load(self.env, self)
-                seat = Seat(self.env, self)
-
-                self.env.process(load.load_carry_on())
-                self.env.process(seat.seat_self())
 
     def walk_one_row(self):
         """

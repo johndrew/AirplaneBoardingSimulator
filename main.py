@@ -1,7 +1,6 @@
 from random import shuffle
-import math
 from numpy import array
-from scipy.stats import f_oneway, kruskal
+from scipy.stats import f_oneway
 from simpy import Environment
 from boarding_algorithms import BoardingAlgorithm
 from models.airplane import Airplane

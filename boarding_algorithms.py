@@ -271,17 +271,17 @@ class BoardingAlgorithm:
 
         # Add the first passenger to the aisle
         p = waiting_queue.get()
-        aisle.add_passenger2(p)
+        aisle.add_passenger(p)
 
         # Cycle through passengers waiting in queue until all are in aisle
         while not waiting_queue.empty():
-            aisle.step_passengers2()
+            aisle.step_passengers()
 
             passenger = waiting_queue.get()
-            added = aisle.add_passenger2(passenger)
+            added = aisle.add_passenger(passenger)
             if not added:
                 waiting_queue.put(passenger)
 
         # Keep moving passengers until all are seated
         while not are_passengers_seated(passengers):
-            aisle.step_passengers2()
+            aisle.step_passengers()
