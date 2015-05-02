@@ -69,7 +69,7 @@ class BoardingAlgorithm:
                       group_7, group_8, group_9, group_10, group_11, group_12]
 
             for g in groups:
-                g.sort(key=lambda x: x.get_row_number())
+                shuffle(g)
 
             return groups
 
